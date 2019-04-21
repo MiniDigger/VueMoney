@@ -1,24 +1,24 @@
 workflow "Build and publish" {
   on = "push"
-  resolves = ["maxheld/ghpages@master"]
+  resolves = ["publish to github pages"]
 }
 
-action "GitHub Action for npm" {
+action "npm build" {
   uses = "actions/npm@master"
   args = "build"
 }
 
-action "Filters for GitHub Actions" {
+action "only on master" {
   uses = "actions/bin/filter@master"
-  needs = ["GitHub Action for npm"]
   args = "branch master"
+  needs = ["npm build"]
 }
 
-action "maxheld/ghpages@master" {
+action "publish to github pages" {
   uses = "maxheld/ghpages@master"
-  needs = ["Filters for GitHub Actions"]
   env = {
     BUILD_DIR = "dist/"
   }
   secrets = ["GH_PAT"]
+  needs = ["only on master"]
 }
