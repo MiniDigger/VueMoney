@@ -13,6 +13,7 @@
     "bootstrap-vue": "^2.0.0-rc.18",
     "core-js": "^2.6.5",
     "register-service-worker": "^1.6.2",
+    "uuid": "^3.3.2",
     "vue": "^2.6.10",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^8.0.0",
@@ -23,10 +24,11 @@
   "devDependencies": {
     "@types/chai": "^4.1.0",
     "@types/mocha": "^5.2.4",
-    "@vue/cli-plugin-babel": "^3.5.0",
+    "@types/uuid": "^3.4.4",
+    "@vue/cli-plugin-babel": "3.6.0",
     "@vue/cli-plugin-pwa": "^3.5.0",
     "@vue/cli-plugin-typescript": "^3.5.0",
-    "@vue/cli-plugin-unit-mocha": "^3.5.0",
+    "@vue/cli-plugin-unit-mocha": "3.6.0",
     "@vue/cli-service": "^3.5.0",
     "@vue/test-utils": "1.0.0-beta.29",
     "chai": "^4.1.2",
@@ -37,17 +39,4 @@
     "typescript": "^3.2.1",
     "vue-template-compiler": "^2.5.21"
   },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "vue-cli-service lint",
-      "git add"
-    ],
-    "*.vue": [
-      "vue-cli-service lint",
-      "git add"
-    ]
-  }
 }

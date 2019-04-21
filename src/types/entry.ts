@@ -5,11 +5,15 @@ export class Entry {
     private readonly _uuid: string;
     private readonly _type: EntryType;
     private readonly _title: string;
+    private readonly _amount: number;
 
-    constructor(uuid: string, type: EntryType, title: string) {
+    private _showDetails = false;
+
+    constructor(uuid: string, type: EntryType, title: string, amount: number) {
         this._uuid = uuid;
         this._type = type;
         this._title = title;
+        this._amount = amount;
     }
 
     get uuid(): string {
@@ -21,10 +25,27 @@ export class Entry {
     }
 
     get readableType(): string {
-        return EntryType[this.type];
+        if (isNaN(Number(this.type))) {
+            console.log(this.type);
+            return this.type as unknown as string;
+        } else {
+            return EntryType[this.type];
+        }
     }
 
     get title(): string {
         return this._title;
+    }
+
+    get amount(): number {
+        return this.amount;
+    }
+
+    get showDetails(): boolean {
+        return this._showDetails;
+    }
+
+    set showDetails(value: boolean) {
+        this._showDetails = value;
     }
 }
