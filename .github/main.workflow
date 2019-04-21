@@ -1,17 +1,26 @@
 workflow "Build and publish" {
   on = "push"
-  resolves = ["publish to github pages"]
+  resolves = [
+    "publish to github pages",
+    "yarn install",
+  ]
 }
 
-action "npm build" {
-  uses = "actions/npm@master"
-  args = "build"
+action "yarn install" {
+  uses = "Borales/actions-yarn@master"
+  args = "install"
+}
+
+action "yarn run build" {
+  uses = "Borales/actions-yarn@master"
+  needs = ["yarn install"]
+  args = "run build"
 }
 
 action "only on master" {
   uses = "actions/bin/filter@master"
   args = "branch master"
-  needs = ["npm build"]
+  needs = ["yarn run build"]
 }
 
 action "publish to github pages" {
