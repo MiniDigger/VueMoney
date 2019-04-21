@@ -24,7 +24,7 @@ action "only on master" {
 }
 
 action "publish to github pages" {
-  uses = "maxheld/ghpages@master"
+  uses = "maxheld83/ghpages@v0.1.1"
   env = {
     BUILD_DIR = "dist/"
   }
