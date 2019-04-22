@@ -28,8 +28,6 @@
 
         <b-button v-b-modal="'new-entry-modal'">Add..</b-button>
         <NewEntryComponent :id="'new-entry-modal'"></NewEntryComponent>
-
-        <span @click="add">Add</span>
     </div>
 </template>
 
@@ -74,11 +72,6 @@ export default class EntryListComponent extends Vue {
 
     get isBusy(): boolean {
         return this.entryModule.getEntries.length == 0;
-    }
-
-    public add() {
-        const entry = new Entry("---", EntryType.Daily, "Test Title", 20.5);
-        this.entryModule.addEntry(entry);
     }
 
     public select(entries: Entry[]) {

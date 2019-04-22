@@ -1,3 +1,4 @@
+import {EntryDirection} from "../types/entry";
 <template>
     <b-modal :id="id" lazy title="New Entry"
              @ok="handleOk" @cancel="handleCancel" @hide="handleCancel">
@@ -43,79 +44,105 @@
                     :state="amountState"
             ></b-form-input>
         </b-form-group>
+
+        <b-form-group description="Enter the categories"
+                      label="Categories"
+                      label-for="categories">
+            <vue-tags-input
+                    v-model="tag"
+                    :tags="tags"
+                    :add-on-key="[13, ':', ';']"
+                    :autocomplete-items="categories"
+                    @tags-changed="newTags => tags = newTags"
+                    placeholder="Add category"
+            />
+        </b-form-group>
     </b-modal>
 </template>
 
 <script lang="ts">
-import {Component, Prop, Vue} from "vue-property-decorator";
-import {getModule} from "vuex-module-decorators";
-import Entries from "@/store/modules/entries";
-import {Entry, EntryType} from "@/types/entry";
-import {BvModalEvent} from "bootstrap-vue-shims";
-import UUIDUtils from "@/utils/UUIDUtils";
+    import {Component, Prop, Vue} from "vue-property-decorator";
+    import {getModule} from "vuex-module-decorators";
+    import Entries from "@/store/modules/entries";
+    import {Entry, EntryDirection, EntryType} from "@/types/entry";
+    import {BvModalEvent} from "bootstrap-vue-shims";
+    import UUIDUtils from "@/utils/UUIDUtils";
+    import VueTagsInput from "@johmun/vue-tags-input";
+    import {Category} from "@/types/category";
 
-@Component
-export default class NewEntryComponent extends Vue {
+    @Component({
+        components: {
+            VueTagsInput,
+        },
+    })
+    export default class NewEntryComponent extends Vue {
 
-    get titleInvalid(): string {
-        if (this.title.length > 3) {
-            return "";
-        } else if (this.title.length > 0) {
-            return "Enter at least 4 characters";
-        } else {
-            return "Please enter something";
+        @Prop() private id!: string;
+
+        private entryModule = getModule(Entries);
+
+        public title: string = "";
+        public type: EntryType = -1;
+        public amount: number = 0;
+        public tag: string = "";
+        public tags: string[] = [];
+
+        get titleInvalid(): string {
+            if (this.title.length > 3) {
+                return "";
+            } else if (this.title.length > 0) {
+                return "Enter at least 4 characters";
+            } else {
+                return "Please enter something";
+            }
         }
+
+        get titleState(): boolean {
+            return this.title.length > 3;
+        }
+
+        get typeInvalid(): string {
+            return "Please select something from the dropdown";
+        }
+
+        get typeState(): boolean {
+            return this.type != null && this.type != -1;
+        }
+
+        get amountInvalid(): string {
+            return "Please enter a valid number larger than zero";
+        }
+
+        get amountState(): boolean {
+            return !isNaN(this.amount) && this.amount > 0;
+        }
+
+        public types(): EntryType[] {
+            return Object.values(EntryType);
+        }
+
+        get categories(): Category[] {
+            return [new Category("test", "red", "class")];
+        }
+
+        public handleOk(event: BvModalEvent) {
+            this.entryModule.getEntries.push(new Entry(UUIDUtils.generateUUID(), this.type, this.title, this.amount, EntryDirection.INCOME));
+            this.reset();
+        }
+
+        public handleCancel(event: BvModalEvent) {
+            this.reset();
+        }
+
+        public reset(): void {
+            this.title = "";
+            this.type = -1;
+            this.amount = 0;
+        }
+
+        // TODO handle enter and ok here
+        // TODO initial focus on title
+        // TODO disable ok button until all valid
+        // TODO don't make everything red initially, only after first typing
     }
-
-    get titleState(): boolean {
-        return this.title.length > 3;
-    }
-
-    get typeInvalid(): string {
-        return "Please select something from the dropdown";
-    }
-
-    get typeState(): boolean {
-        return this.type != null && this.type != -1;
-    }
-
-    get amountInvalid(): string {
-        return "Please enter a valid number larger than zero";
-    }
-
-    get amountState(): boolean {
-        return !isNaN(this.amount) && this.amount > 0;
-    }
-
-    public title: string = "";
-    public type: EntryType = -1;
-    public amount: number = 0;
-    @Prop() private id!: string;
-
-    private entryModule = getModule(Entries);
-
-    public types(): EntryType[] {
-        return Object.values(EntryType);
-    }
-
-    public handleOk(event: BvModalEvent) {
-        this.entryModule.getEntries.push(new Entry(UUIDUtils.generateUUID(), this.type, this.title, this.amount));
-        this.reset();
-    }
-
-    public handleCancel(event: BvModalEvent) {
-        this.reset();
-    }
-
-    public reset(): void {
-        this.title = "";
-        this.type = -1;
-        this.amount = 0;
-}
-
-    // TODO handle enter and ok here
-    // TODO initial focus on title
-    // TODO disable ok button until all valid
-    // TODO don't make everything red initially, only after first typing
-}
 </script>

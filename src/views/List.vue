@@ -1,7 +1,5 @@
 <template>
-    <div class="test">
-        <h1>home</h1>
-    </div>
+    <EntryListComponent/>
 </template>
 
 <script lang="ts">
@@ -11,6 +9,6 @@
     @Component({
         components: {EntryListComponent},
     })
-    export default class Home extends Vue {
+    export default class List extends Vue {
     }
 </script>
